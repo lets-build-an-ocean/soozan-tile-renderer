@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iran OSM Tiles Viewer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+        .info {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            z-index: 1000;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="info">
+        <strong>Iran OSM Tiles</strong><br>
+        Zoom: <span id="zoom">-</span><br>
+        Lat: <span id="lat">-</span><br>
+        Lng: <span id="lng">-</span>
+    </div>
+    <div id="map"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+    <script>
+        // Initialize map centered on Tehran, Iran
+        const map = L.map('map').setView([35.6892, 51.3890], 6);
+
+        // Add your local tile layer
+        L.tileLayer('http://localhost:8080/tile/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Update coordinates info
+        function updateInfo() {
+            document.getElementById('zoom').textContent = map.getZoom();
+            const center = map.getCenter();
+            document.getElementById('lat').textContent = center.lat.toFixed(4);
+            document.getElementById('lng').textContent = center.lng.toFixed(4);
+        }
+
+        map.on('move', updateInfo);
+        map.on('zoom', updateInfo);
+        updateInfo();
+
+        // Add a marker on Tehran
+        L.marker([35.6892, 51.3890])
+            .addTo(map)
+            .bindPopup('Tehran, Iran')
+            .openPopup();
+    </script>
+</body>
+</html>
